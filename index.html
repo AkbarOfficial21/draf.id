@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Jurnal & Dataset - K-Means Clustering</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      text-align: center;
+      color: #7f8c8d;
+      font-style: italic;
+      margin-bottom: 30px;
+    }
+    .search-box {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .search-box input {
+      padding: 10px;
+      width: 300px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+      font-weight: 600;
+    }
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    a:hover {
+      text-decoration: underline;
+      color: #1a6ea3;
+    }
+    .size {
+      text-align: right;
+      font-family: monospace;
+      color: #7f8c8d;
+    }
+    .date {
+      color: #95a5a6;
+      font-size: 0.9em;
+    }
+    .icon {
+      margin-right: 8px;
+      font-size: 1.1em;
+    }
+    @media (max-width: 768px) {
+      .search-box input {
+        width: 100%;
+      }
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+      tr {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+      }
+      td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        font-weight: bold;
+        color: #3498db;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Daftar File Jurnal & Dataset</h1>
+    <p class="subtitle">Clustering K-Means untuk Bantuan Sosial & Kemiskinan</p>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Cari judul file..." onkeyup="searchTable()">
+    </div>
+
+    <table id="fileTable">
+      <thead>
+        <tr>
+          <th>Nama File</th>
+          <th class="date">Tanggal</th>
+          <th class="size">Ukuran</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Daftar file akan diisi otomatis oleh JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Daftar file dari output `dir` (dikonversi ke array objek)
+    const files = [
+      { name: "Algoritma K-Means Clustering dalam Memprediksi Penerima Bantuan Langsung Tunai (BLT) Dana Desa.pdf", date: "11/14/2025", time: "09:51", size: 445142 },
+      { name: "ANALISA PERBANDINGAN ALGORITMA K-MEANS, K MEDOIDS, DAN X-MEANS UNTUK PENGELOMPOKKAN KINERJA PEGAWAI.pdf", date: "11/14/2025", time: "09:56", size: 598993 },
+      { name: "Analisa Perbandingan Complate Linkage AHC dan K-Medoids Dalam Pengelompokkan Data Kemiskinan di Indonesia.pdf", date: "11/14/2025", time: "10:16", size: 796089 },
+      { name: "Analisis Algoritma K-Means untuk Klustering Penerima Bantuan Sosia Covid-19.pdf", date: "11/14/2025", time: "10:17", size: 837565 },
+      { name: "Analisis Efektivitas Bantuan Sosial (Bansos) dalam mengatasi Kemiskinan di Indonesia.pdf", date: "11/14/2025", time: "10:17", size: 403910 },
+      { name: "ANALISIS TINGKAT KEMISKINAN DENGAN ALGORITMA K-MEANS MENGGUNAKAN RAPIDMINER DI TINGKAT KOTA KABUPATEN DI JAWA TENGAH.pdf", date: "10/31/2025", time: "19:17", size: 639306 },
+      { name: "APPLICATION OF K-MEANS CLUSTERING IN GROUPING CITIZEN WELFARE BASED ON SUB-DISTRICTS IN SURAKARTA CITY.pdf", date: "10/08/2025", time: "22:26", size: 348763 },
+      { name: "CLUSTERING PENDUDUK MISKIN MENGGUNAKAN ALGORITMA K-MEANS PADA WILAYAH JAWA BARAT.pdf", date: "11/14/2025", time: "09:55", size: 622479 },
+      { name: "CLUSTERING PENDUDUK MISKIN UNTUK PENERIMA BANTUAN SOSIAL MENGGUNAKAN ALGORITMA K-MEANS STUDI KASUS DESA GREGED.pdf", date: "11/14/2025", time: "09:42", size: 863437 },
+      { name: "CLUSTERING PENERIMA BANTUAN SOSIAL MENGGUNAKAN ALGORITMA K-MEANS DI DESA JATIPANCUR.pdf", date: "11/14/2025", time: "09:43", size: 598566 },
+      { name: "Comparative Analysis Of K Means And K Medoids Algorithms In Determining Social Assistance In Padang Sidimpuan City, North Sumatra.pdf", date: "11/14/2025", time: "10:18", size: 426968 },
+      { name: "Comparative Analysis of K-Means and K-Medoids Algorithms in New Student Admission.pdf", date: "11/07/2025", time: "23:23", size: 240769 },
+      { name: "Comparison of Hierarchical Clustering, K-Means, K-Medoids, and Fuzzy C-Means Methods in Grouping Provinces in Indonesia according to the Special Index for Handling Stunting.pdf", date: "10/31/2025", time: "19:07", size: 901611 },
+      { name: "Data Mining Menentukan Cluster Penerima Program Bantuan dengan Metode K-Means.pdf", date: "11/14/2025", time: "10:11", size: 672795 },
+      { name: "Grouping of Social Assistance Recipients Using K-Means Algorithm (Case Study Gegunung Village Office).pdf", date: "10/30/2025", time: "20:54", size: 495111 },
+      { name: "Implementasi Algoritma K-Means untuk Mengelompokkan Data Tingkat Kemiskinan di Sulawesi Selatan Berdasarkan KotaKabupaten.pdf", date: "11/14/2025", time: "10:26", size: 395175 },
+      { name: "IMPLEMENTASI DATA MINING ALGORITMA K-MEANS UNTUK KLASIFIKASI PENDUDUK MISKIN BERDASARKAN TINGKAT KEMISKINAN DI JAWA BARAT.pdf", date: "11/08/2025", time: "06:51", size: 640634 },
+      { name: "Implementasi K-Means Cluster Analysis untuk Mengelompokkan KabupatenKota Berdasarkan Data Kemiskinan di Provinsi Jawa Tengah Tahun 2022.pdf", date: "10/10/2025", time: "14:19", size: 584715 },
+      { name: "Implementation of Data Mining Using K-medoids Clustering Method for Determining Social Assistance Recipients.pdf", date: "11/07/2025", time: "23:13", size: 794871 },
+      { name: "Implementation of K-Means Clustering for Social Assistance Recipients with E-ISSN 2807-9035.pdf", date: "10/22/2025", time: "19:43", size: 863865 },
+      { name: "Implementation of K-Means Clustering in Mapping Teacher Distribution Using Geographic Information System.pdf", date: "11/14/2025", time: "10:29", size: 275020 },
+      { name: "K-Means Clustering in Determining the Eligibility of Recipients of Assistance for the Poor Case Study of Village Sukoharjo III.pdf", date: "10/08/2025", time: "22:26", size: 187110 },
+      { name: "KLASTERISASI PENERIMA BANTUAN LANGSUNG TUNAI (BLT) DANA DESA MENGGUNAKAN ALGORITMA K-MEANS.pdf", date: "11/14/2025", time: "09:43", size: 315126 },
+      { name: "PARAMETER DATA P3KE TAHUN 2024.xlsx", date: "11/09/2025", time: "21:00", size: 856611 },
+      { name: "Penerapan Algoritma Clustering K-Means Untuk Menentukan Prioritas Penerima Bantuan Dana Sosial PKH Di Kelurahan Kampung Singkep.pdf", date: "11/14/2025", time: "09:49", size: 639775 },
+      { name: "Penerapan Algoritma K-Means Clustering untuk Mengelompokkan Kecamatan di Kabupaten Grobogan Menurut Tingkat Kesejahteraan Keluarga Tahun 2020.pdf", date: "11/14/2025", time: "10:01", size: 404668 },
+      { name: "Penerapan Algoritma Mean-Shift Pada Clustering Penerimaan Bantuan Pangan Non Tunai.pdf", date: "11/14/2025", time: "10:02", size: 1150455 },
+      { name: "PENERAPAN DATA MINING CLUSTERING MENGGUNAKAN ALGORITMA X MEANS PADA DATA PENERIMA BANTUAN PROGRAM KELUARGA HARAPAN DI DESA GEBANG KULON KABUPATEN CIREBON.pdf", date: "11/14/2025", time: "10:25", size: 450252 },
+      { name: "Perbandingan Algoritma K-Means Dan K-Medoids Untuk Clustering Daerah Rawan Banjir Di Kabupaten Rokan Hilir.pdf", date: "11/14/2025", time: "09:52", size: 383707 },
+      { name: "Perbandingan K-Means dan K-Medoids Pada Pengelompokan Data Miskin di Indonesia.pdf", date: "10/31/2025", time: "19:07", size: 289003 },
+      { name: "Perbandingan Metode K-Means dan K-Medoids Dengan Validitas Davies-Bouldin Indeks, Dunn Indeks dan Indeks Connectivity Pada Pengelompokkan Masyarakat Penerima Bantuan Langsung Tunai.pdf", date: "10/31/2025", time: "19:07", size: 379212 },
+      { name: "Selayang Pandang Kecamatan Solear.pdf", date: "11/09/2025", time: "14:24", size: 1879255 },
+      { name: "SKRIPSI_INFORMATIKA.pdf", date: "10/27/2025", time: "09:51", size: 543792 }
+    ];
+
+    // Fungsi format ukuran file
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Fungsi untuk ikon berdasarkan ekstensi
+    function getIcon(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      if (ext === 'pdf') return '📄';
+      if (ext === 'xlsx' || ext === 'xls') return '📊';
+      return '📁';
+    }
+
+    // Render tabel
+    const tbody = document.querySelector('#fileTable tbody');
+    files.forEach(file => {
+      const row = document.createElement('tr');
+
+      const icon = getIcon(file.name);
+      const link = `<a href="${encodeURIComponent(file.name)}" target="_blank">${icon} ${file.name}</a>`;
+
+      row.innerHTML = `
+        <td data-label="Nama File">${link}</td>
+        <td data-label="Tanggal" class="date">${file.date}</td>
+        <td data-label="Ukuran" class="size">${formatBytes(file.size)}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    // Fungsi pencarian
+    function searchTable() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toLowerCase();
+      const rows = tbody.getElementsByTagName('tr');
+
+      for (let i = 0; i < rows.length; i++) {
+        const td = rows[i].getElementsByTagName('td')[0];
+        if (td) {
+          const txtValue = td.textContent || td.innerText;
+          rows[i].style.display = txtValue.toLowerCase().indexOf(filter) > -1 ? '' : 'none';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
